@@ -3,7 +3,7 @@ set -euo pipefail
 
 #set up dcmtk first
 sudo apt update
-sudo apt install -y dcmtk
+sudo apt install -y dcmtk python3 python3-pip
 
 # create dcmtk service
 
@@ -55,7 +55,7 @@ fi
 python3 -m pip install --quiet Flask || true
 
 # install systemd unit
-sudo cp dcmqrscp/dcmtk-configurator.service /etc/systemd/system/
+sudo cp dcmtk-configurator.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now dcmtk-configurator.service
 
