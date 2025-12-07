@@ -62,7 +62,7 @@ sudo systemctl enable --now dcmtk-configurator.service
 # Install nginx and set up reverse proxy
 sudo apt install -y nginx apache2-utils
 sudo htpasswd -c /etc/nginx/.htpasswd admin
-cp dcmtk-configurator-nginx.conf /etc/nginx/sites-available/dcmtk-configurator
+cp dcmqrscp/dcmtk-configurator-nginx.conf /etc/nginx/sites-available/dcmtk-configurator
 sudo ln -s /etc/nginx/sites-available/dcmtk-configurator /etc/nginx/sites-enabled/dcmtk-configurator
 sudo rm /etc/nginx/sites-enabled/default || true
 sudo systemctl restart nginx
