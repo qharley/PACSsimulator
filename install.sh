@@ -7,7 +7,7 @@ sudo apt install -y dcmtk
 
 # create dcmtk service
 
-sudo cp dcmtk-dcmqrscp.service /etc/systemd/system/dcmtk-dcmqrscp.service
+sudo cp dcmqrscp/dcmtk-dcmqrscp.service /etc/systemd/system/dcmtk-dcmqrscp.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now dcmtk-dcmqrscp.service
 sudo systemctl status dcmtk-dcmqrscp.service
