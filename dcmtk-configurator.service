@@ -1,0 +1,13 @@
+[Unit]
+Description=DCMTK SCU Configurator (Flask + HTMX)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/dicom-configurator
+ExecStart=/usr/bin/python3 /opt/dicom-configurator/app.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

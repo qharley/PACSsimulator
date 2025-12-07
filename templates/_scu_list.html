@@ -1,0 +1,23 @@
+<div id="scu-list">
+  <h2>Configured SCUs</h2>
+  <table>
+    <thead><tr><th>AE Title</th><th>Host</th><th>IP</th><th>Port</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for s in scus %}
+      <tr>
+        <td>{{ s.ae_title }}</td>
+        <td>{{ s.hostname }}</td>
+        <td>{{ s.ip }}</td>
+        <td>{{ s.port }}</td>
+        <td>
+          <button hx-get="/scu/edit-form?ae={{ s.ae_title }}" hx-target="#scu-list" hx-swap="outerHTML">Edit</button>
+          <form hx-post="/scu/delete" hx-target="#scu-list" hx-swap="outerHTML" style="display:inline">
+            <input type="hidden" name="ae" value="{{ s.ae_title }}">
+            <button type="submit" onclick="return confirm('Delete AE {{ s.ae_title }}?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

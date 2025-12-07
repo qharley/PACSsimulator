@@ -1,0 +1,7 @@
+body { font-family: sans-serif; background:#f6f7fb; color:#222 }
+.container { max-width:900px; margin:24px auto; padding:16px; background:#fff; border-radius:8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06)}
+input { margin:6px 0; padding:6px }
+table { border-collapse: collapse; width:100%; margin-top:12px }
+td,th { border:1px solid #ddd; padding:8px }
+th { background:#f0f2f7 }
+button { padding:6px 10px }

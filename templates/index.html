@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>DCMTK SCU Configurator</title>
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>SCU Configurator</h1>
+
+    <section id="add">
+      <h2>Add SCU</h2>
+      <form hx-post="/scu/add" hx-target="#scu-list" hx-swap="outerHTML">
+        AE Title: <input name="ae" required maxlength="16"><br>
+        Hostname: <input name="hostname" required><br>
+        IP: <input name="ip" required pattern="^\d{1,3}(\.\d{1,3}){3}$"><br>
+        Port: <input name="port" value="104"><br>
+        <button type="submit">Add SCU</button>
+      </form>
+    </section>
+
+    <section id="scu-list">
+      {% include '_scu_list.html' %}
+    </section>
+  </div>
+</body>
+</html>
