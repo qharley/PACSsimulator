@@ -1,0 +1,17 @@
+[Unit]
+Description=DCMTK dcmqrscp (DICOM Query/Retrieve & Storage SCP)
+After=network.target
+
+[Service]
+Type=simple
+User=dcmtk
+Group=dcmtk
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+ExecStart=/usr/bin/dcmqrscp --config /etc/dcmtk/dcmqrscp.cfg
+Restart=on-failure
+RestartSec=5
+WorkingDirectory=/var/lib/dcmtk
+
+[Install]
+WantedBy=multi-user.target

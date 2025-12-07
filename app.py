@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from flask import Flask, render_template, request, jsonify, abort
-from config_manager import ConfigManager, HostEntry, SCUEntry
+from flask import Flask, render_template, request, abort
+from config_manager import ConfigManager, SCUEntry
 import subprocess
 import os
 
@@ -45,7 +45,7 @@ def add_scu():
         cm.write_back()
         # restart service to pick up new host/AETable
         subprocess.run(["systemctl", "restart", SERVICE_NAME], check=False)
-    except Exception as e:
+    except (KeyError, ValueError, OSError) as e:
         return (str(e), 500)
     return render_template('_scu_list.html', **cm.read_all())
 
@@ -66,7 +66,7 @@ def edit_scu():
         cm.edit_scu(old_ae, new_entry)
         cm.write_back()
         subprocess.run(["systemctl", "restart", SERVICE_NAME], check=False)
-    except Exception as e:
+    except (KeyError, ValueError, OSError) as e:
         return (str(e), 500)
     return render_template('_scu_list.html', **cm.read_all())
 
@@ -80,7 +80,7 @@ def delete_scu():
         cm.delete_scu(ae)
         cm.write_back()
         subprocess.run(["systemctl", "restart", SERVICE_NAME], check=False)
-    except Exception as e:
+    except (KeyError, ValueError, OSError) as e:
         return (str(e), 500)
     return render_template('_scu_list.html', **cm.read_all())
 

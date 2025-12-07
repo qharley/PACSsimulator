@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Tuple
+from typing import Dict, Optional
 import re
 import tempfile
 import shutil
@@ -27,10 +27,11 @@ class ConfigManager:
         self.raw = ''
         self.hosts: Dict[str, HostEntry] = {}
         self.scus: Dict[str, SCUEntry] = {}
+        self.hosts_ip: Dict[str, str] = {}
         self._load()
 
     def _load(self):
-        with open(self.cfg_path, 'r') as f:
+        with open(self.cfg_path, 'r', encoding='utf-8') as f:
             self.raw = f.read()
         self._parse()
 
@@ -94,7 +95,7 @@ class ConfigManager:
         # Keep a quick mapping of hostname->ip
         self.hosts_ip = {}
         if os.path.exists(self.hosts_path):
-            with open(self.hosts_path,'r') as f:
+            with open(self.hosts_path, 'r', encoding='utf-8') as f:
                 for line in f:
                     line=line.strip()
                     if not line or line.startswith('#'): continue
@@ -121,7 +122,7 @@ class ConfigManager:
         self._load_hosts_file()
         if scu.hostname not in self.hosts_ip:
             # append to hosts file
-            with open(self.hosts_path, 'a') as f:
+            with open(self.hosts_path, 'a', encoding='utf-8') as f:
                 f.write(f"{scu.ip} {scu.hostname} # DICOM SCU\n")
             self.hosts_ip[scu.hostname]=scu.ip
         # add a HostTable symbolic entry if not present
@@ -142,7 +143,7 @@ class ConfigManager:
         # ensure host present
         self._load_hosts_file()
         if new_scu.hostname not in self.hosts_ip:
-            with open(self.hosts_path, 'a') as f:
+            with open(self.hosts_path, 'a', encoding='utf-8') as f:
                 f.write(f"{new_scu.ip} {new_scu.hostname} # DICOM SCU\n")
             self.hosts_ip[new_scu.hostname]=new_scu.ip
         # regenerate hosttable entry
@@ -169,11 +170,12 @@ class ConfigManager:
     def _remove_host_from_hostsfile(self, hostname: str):
         # rewrite hosts file removing lines that mention hostname with DICOM SCU tag or exact match
         tmp = tempfile.NamedTemporaryFile('w', delete=False)
-        with open(self.hosts_path,'r') as f, tmp:
+        with open(self.hosts_path, 'r', encoding='utf-8') as f:
             for line in f:
                 if hostname in line and '# DICOM SCU' in line:
                     continue
                 tmp.write(line)
+        tmp.close()
         shutil.move(tmp.name, self.hosts_path)
 
     def _sync_to_raw(self):
@@ -186,7 +188,7 @@ class ConfigManager:
         for aet, scu in self.scus.items():
             # write a simple AETable line that references the host symbol
             sym = scu.ae_title.lower()
-            aelines.append(f"{aet} /var/lib/dcmtk/db/{aet} RW (500, 1gb) {sym}")
+            aelines.append(f"{aet} /var/lib/dcmtk/db/DCMTK_STR_SCP RW (500, 1gb) {sym}")
         raw = self.raw
         raw = re.sub(r'HostTable\s+BEGIN.*?HostTable\s+END', 'HostTable BEGIN\n' + '\n'.join(hostlines) + '\nHostTable END', raw, flags=re.S|re.I)
         raw = re.sub(r'AETable\s+BEGIN.*?AETable\s+END', 'AETable BEGIN\n' + '\n'.join(aelines) + '\nAETable END', raw, flags=re.S|re.I)
